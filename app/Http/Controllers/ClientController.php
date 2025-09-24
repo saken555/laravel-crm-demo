@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClientController extends Controller
 {
-    // ... (метод index остается без изменений)
+    
     public function index()
     {
         $clients = Client::all();
         return view('clients.index', ['clients' => $clients]);
     }
 
-    // ... (метод create остается без изменений)
+   
     public function create()
     {
         return view('clients.create');
@@ -40,9 +41,34 @@ class ClientController extends Controller
         return redirect()->route('clients.index');
     }
 
-    // ... (остальные методы пока пустые)
+    
     public function show(Client $client){}
-    public function edit(Client $client){}
-    public function update(Request $request, Client $client){}
+
+    public function edit(Client $client)
+    {
+        return view('clients.edit', ['client' => $client]);
+    }
+
+    public function update(Request $request, Client $client)
+    {
+                
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('clients')->ignore($client->id), 
+            ],
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+        ]);
+
+        
+        $client->update($validated);
+
+        
+        return redirect()->route('clients.index');    
+    }
+
     public function destroy(Client $client){}
 }
