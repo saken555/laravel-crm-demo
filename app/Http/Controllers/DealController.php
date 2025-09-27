@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Deal;
+use App\Models\Client;
+use App\Models\Contact;
 
 class DealController extends Controller
 {
@@ -11,7 +14,9 @@ class DealController extends Controller
      */
     public function index()
     {
-        //
+        $deals = Deal::with('client', 'contact')->get();
+
+        return view('deals.index', ['deals' => $deals]);
     }
 
     /**
@@ -19,7 +24,10 @@ class DealController extends Controller
      */
     public function create()
     {
-        //
+        $clients = Client::orderBy('name')->get();
+        $contacts = Contact::orderBy('first_name')->get();
+
+        return view('deals.create', compact('clients', 'contacts'));
     }
 
     /**
@@ -27,7 +35,20 @@ class DealController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'value' => 'required|numeric|min:0',
+            'client_id' => 'required|exists:clients,id',
+            'contact_id' => 'nullable|exists:contacts,id',
+        ]);
+
+        // По умолчанию статус 'new'
+        $validated['status'] = 'new';
+
+        Deal::create($validated);
+
+        return redirect()->route('deals.index');
     }
 
     /**
