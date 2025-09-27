@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Client;
+use Illuminate\Validation\Rule;
 
 class ContactController extends Controller
 {
@@ -58,24 +59,43 @@ class ContactController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Contact $contact)
     {
-        //
+        $clients = Client::orderBy('name')->get();
+        return view('contacts.edit', [
+            'contact' => $contact,
+            'clients' => $clients
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Contact $contact)
     {
-        //
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('contacts')->ignore($contact->id),
+            ],
+            'phone' => 'nullable|string|max:255',
+        ]);
+
+        $contact->update($validated);
+
+        return redirect()->route('contacts.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Contact $contact)
     {
-        //
+        $contact->delete();
+        return redirect()->route('contacts.index');
     }
 }
