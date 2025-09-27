@@ -62,24 +62,36 @@ class DealController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Deal $deal)
     {
-        //
+        $clients = Client::orderBy('name')->get();
+        $contacts = Contact::orderBy('first_name')->get();
+        return view('deals.edit', compact('deal', 'clients', 'contacts'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Deal $deal)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'value' => 'required|numeric|min:0',
+            'status' => 'required|string',
+            'client_id' => 'required|exists:clients,id',
+            'contact_id' => 'nullable|exists:contacts,id',
+        ]);
+        $deal->update($validated);
+        return redirect()->route('deals.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Deal $deal)
     {
-        //
+        $deal->delete();
+        return redirect()->route('deals.index');
     }
 }

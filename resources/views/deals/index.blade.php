@@ -59,8 +59,16 @@
                                         {{ $deal->status }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                    </td>
+    <a href="{{ route('deals.edit', $deal) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+
+    <form class="inline-block" action="{{ route('deals.destroy', $deal) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this deal?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="text-red-600 hover:text-red-900 ml-4">
+            Delete
+        </button>
+    </form>
+</td>
                                 </tr>
                             @empty
                                 <tr>
