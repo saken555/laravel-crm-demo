@@ -5,7 +5,7 @@
 Простая CRM-система, созданная на фреймворке Laravel 11 в качестве демонстрационного проекта. Проект демонстрирует знание основных концепций Laravel, CRUD-операций, связей между моделями (Eloquent Relationships) и профессионального рабочего процесса с Git (Feature Branch Workflow, Pull Requests).
 
 ## Скриншот
-![Dashboard Screenshot]https://github.com/saken555/laravel-crm-demo/blob/main/img.png
+![Dashboard Screenshot](https://github.com/saken555/laravel-crm-demo/blob/main/img.png?raw=true)
 
 
 ## Основные возможности (Features)
