@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Contact;
+use App\Models\Client;
 
 class ContactController extends Controller
 {
@@ -21,7 +22,8 @@ class ContactController extends Controller
      */
     public function create()
     {
-        //
+        $clients = Client::orderBy('name')->get();
+        return view('contacts.create', ['clients' => $clients]);
     }
 
     /**
@@ -29,8 +31,21 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'nullable|email|unique:contacts,email',
+            'phone' => 'nullable|string|max:255',
+        ]);
+
+        // Создание нового контакта
+        Contact::create($validated);
+
+        // Редирект на страницу со списком контактов
+        return redirect()->route('contacts.index');
     }
+
 
     /**
      * Display the specified resource.
