@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http-Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate-Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateClientRequest extends FormRequest
@@ -12,7 +12,9 @@ class UpdateClientRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // Здесь мы спрашиваем: "Может ли ($this->user()) текущий пользователь
+        // обновлять (update) этого конкретного клиента ($this->route('client'))?"
+        return $this->user()->can('update', $this->route('client'));
     }
 
     /**
@@ -27,8 +29,6 @@ class UpdateClientRequest extends FormRequest
             'email' => [
                 'nullable',
                 'email',
-                // Эта магия позволяет получить доступ к клиенту из маршрута
-                // и игнорировать его ID при проверке на уникальность email.
                 Rule::unique('clients')->ignore($this->route('client')->id),
             ],
             'phone' => 'nullable|string|max:255',

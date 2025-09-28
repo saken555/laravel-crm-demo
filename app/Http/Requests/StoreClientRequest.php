@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http-Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Client; // <-- Добавляем импорт
+use Illuminate-Foundation\Http\FormRequest;
 
 class StoreClientRequest extends FormRequest
 {
@@ -11,7 +12,9 @@ class StoreClientRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // Теперь мы не просто разрешаем, а спрашиваем у Политики:
+        // "Может ли ($this->user()) текущий пользователь создавать (create) клиентов (Client::class)?"
+        return $this->user()->can('create', Client::class);
     }
 
     /**
