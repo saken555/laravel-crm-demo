@@ -1,28 +1,40 @@
 [Читать на русском](README.ru.md)
 
-# Demo CRM on Laravel
+# Demo CRM on Laravel (with Feature Tests)
 
-A simple CRM system built with the Laravel 11 framework as a portfolio project. The project demonstrates knowledge of core Laravel concepts, CRUD operations, Eloquent Relationships, and a professional Git workflow (Feature Branch Workflow, Pull Requests).
+A simple CRM system built with the Laravel 11 framework. This project was initially built with basic functionality and then refactored to incorporate clean architecture concepts.
+
+The project demonstrates a understanding of core Laravel concepts, clean architecture patterns (Form Requests, Policies, Service Layer), database relationships, automated testing, and a Git workflow (Feature Branch Workflow, Pull Requests). The development environment is fully containerized using Docker and Laravel Sail.
 
 ## Screenshot
 ![Dashboard Screenshot](https://github.com/saken555/laravel-crm-demo/blob/main/img.png?raw=true)
 
-## Features
+## Key Features
 
-* **Authentication:** User registration and login.
+* **Authentication:** User registration and login (Laravel Breeze).
 * **Dashboard:** A summary dashboard with statistics on clients, contacts, and deals.
-* **Clients CRUD:** Full Create, Read, Update, Delete operations for client companies.
-* **Contacts CRUD:** Manage contact persons with a mandatory relationship to a client (One-to-Many relationship).
-* **Deals CRUD:** Manage sales deals with relationships to clients and contacts.
+* **Clients, Contacts, Deals:** Full CRUD functionality for all core CRM entities.
+* **Database Relationships:** Implemented One-to-Many relationships (Client -> Contacts, Client -> Deals).
 
-## Tech Stack
+## Tech Stack & Concepts Demonstrated
 
-* **Backend:** PHP 8.2, Laravel 11
+* **Backend:** PHP 8.3, Laravel 11
 * **Frontend:** Blade, Tailwind CSS
 * **Database:** SQLite
+* **Development Environment:** Docker, Laravel Sail
+* **Architecture & Patterns:**
+    * MVC (Model-View-Controller)
+    * **Service Layer:** Business logic is encapsulated in Service classes, keeping controllers thin.
+    * **Form Requests:** Validation logic is separated from controllers into dedicated request classes.
+    * **Policies:** Authorization logic is handled by Policy classes to define user permissions.
+* **Testing:**
+    * Feature tests written with **PHPUnit**.
+    * In-memory SQLite database for fast and isolated test runs.
 * **Tooling:** Git, GitHub, Composer, NPM
 
-## Installation and Setup
+## Installation and Setup (via Docker & Sail)
+
+This project is configured to run with Laravel Sail. The only prerequisite is to have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed.
 
 1.  Clone the repository:
     ```bash
@@ -32,32 +44,29 @@ A simple CRM system built with the Laravel 11 framework as a portfolio project. 
     ```bash
     cd laravel-crm-demo
     ```
-3.  Install PHP dependencies:
-    ```bash
-    composer install
-    ```
-4.  Create a copy of the `.env.example` file:
+3.  Create a copy of the `.env.example` file:
     ```bash
     cp .env.example .env
     ```
-5.  Generate the application key:
+4.  Install PHP dependencies via a temporary Docker container:
     ```bash
-    php artisan key:generate
+    docker run --rm \
+        -u "$(id -u):$(id -g)" \
+        -v "$(pwd):/var/www/html" \
+        -w /var/www/html \
+        laravelsail/php83-composer:latest \
+        composer install --ignore-platform-reqs
     ```
-6.  Create an empty file for the SQLite database:
+5.  Start the Sail containers in the background:
     ```bash
-    touch database/database.sqlite
+    ./vendor/bin/sail up -d
     ```
-7.  Run the database migrations to create the tables:
+6.  Generate the application key:
     ```bash
-    php artisan migrate
+    ./vendor/bin/sail artisan key:generate
     ```
-8.  Install JavaScript dependencies:
+7.  Run the database migrations:
     ```bash
-    npm install
+    ./vendor/bin/sail artisan migrate
     ```
-9.  Compile frontend assets:
-    ```bash
-    npm run build
-    ```
-10. Configure your local web server (e.g., Apache in LAMPP) to point the document root to the `public/` directory.
+8.  The application is now running and available at **http://localhost**.
