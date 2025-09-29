@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http-Requests;
+namespace App\Http\Requests;
 
 use App\Models\Client; // <-- Добавляем импорт
-use Illuminate-Foundation\Http\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClientRequest extends FormRequest
 {
